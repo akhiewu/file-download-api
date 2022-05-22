@@ -45,7 +45,7 @@ class DownloadPDF(View):
 		pdf = render_to_pdf('app/pdf_template.html', data)
 
 		response = HttpResponse(pdf, content_type='application/pdf')
-		filename = "Invoice_%s.pdf" %("12341231")
+		filename = 'Invoice_12341231.pdf'
 		content = "attachment; filename='%s'" %(filename)
 		response['Content-Disposition'] = content
 		return response
@@ -67,25 +67,24 @@ from .utils import render_to_pdf #created in step 4
 
 class GeneratePDF(View):
     def get(self, request, *args, **kwargs):
-        template = get_template('invoice.html')
-        context = {
-            "invoice_id": 123,
-            "customer_name": "John Cooper",
-            "amount": 1399.99,
-            "today": "Today",
-        }
-        html = template.render(context)
-        pdf = render_to_pdf('invoice.html', context)
-        if pdf:
-            response = HttpResponse(pdf, content_type='application/pdf')
-            filename = "Invoice_%s.pdf" %("12341231")
-            content = "inline; filename='%s'" %(filename)
-            download = request.GET.get("download")
-            if download:
-                content = "attachment; filename='%s'" %(filename)
-            response['Content-Disposition'] = content
-            return response
-        return HttpResponse("Not found")
+    	template = get_template('invoice.html')
+    	context = {
+    	    "invoice_id": 123,
+    	    "customer_name": "John Cooper",
+    	    "amount": 1399.99,
+    	    "today": "Today",
+    	}
+    	html = template.render(context)
+    	if pdf := render_to_pdf('invoice.html', context):
+    		response = HttpResponse(pdf, content_type='application/pdf')
+    		filename = 'Invoice_12341231.pdf'
+    		content = "inline; filename='%s'" %(filename)
+    		download = request.GET.get("download")
+    		if download:
+    		    content = "attachment; filename='%s'" %(filename)
+    		response['Content-Disposition'] = content
+    		return response
+    	return HttpResponse("Not found")
    #------------------------------------------------------------------------------------- 
     
     # def process_report(request):
@@ -112,15 +111,15 @@ import mimetypes
 
 
 def download_file(request):
-        # fill these variables with real values
-        fl_path = '/file/path'
-        filename = 'downloaded_file_name.extension'
+	# fill these variables with real values
+	fl_path = '/file/path'
+	filename = 'downloaded_file_name.extension'
 
-        fl = open(fl_path, 'r')
-        mime_type, _ = mimetypes.guess_type(fl_path)
-        response = HttpResponse(fl, content_type=mime_type)
-        response['Content-Disposition'] = "attachment; filename=%s" % filename
-        
-        return response
+	fl = open(fl_path, 'r')
+	mime_type, _ = mimetypes.guess_type(fl_path)
+	response = HttpResponse(fl, content_type=mime_type)
+	response['Content-Disposition'] = f"attachment; filename={filename}"
+
+	return response
                 
         
